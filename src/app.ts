@@ -11,10 +11,10 @@ app.get("/", (_req, res) => {
   res.json({ message: "Hello World!" }).status(200);
 });
 
-// inddex Endpoint
+// index Endpoint
 app.get("/dogs", async (_req, res) => {
-  const users = await prisma.dog.findMany();
-  res.json(users).status(200);
+  const dogs = await prisma.dog.findMany();
+  res.status(200).send(dogs);
 });
 
 // show Endpoint
@@ -36,7 +36,7 @@ app.get("/dogs/:id", async (req, res) => {
   }
 });
 
-// detele Endpoint
+// delete Endpoint
 app.delete("/dogs/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
