@@ -14,14 +14,14 @@ app.get("/", (_req, res) => {
 // index Endpoint
 app.get("/dogs", async (_req, res) => {
   const dogs = await prisma.dog.findMany();
-  res.status(200).send(dogs);
+  return res.status(200).send(dogs);
 });
 
 // show Endpoint
 app.get("/dogs/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
-    res
+    return res
       .status(400)
       .send({ message: "id should be a number" });
   }
@@ -30,9 +30,9 @@ app.get("/dogs/:id", async (req, res) => {
   });
 
   if (dog === null) {
-    res.status(204).send({ status: 204 });
+    return res.status(204).send({ status: 204 });
   } else {
-    res.json(dog).status(200);
+    return res.json(dog).status(200);
   }
 });
 
@@ -40,7 +40,7 @@ app.get("/dogs/:id", async (req, res) => {
 app.delete("/dogs/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
-    res
+    return res
       .status(400)
       .send({ message: "id should be a number" });
   }
@@ -49,12 +49,12 @@ app.delete("/dogs/:id", async (req, res) => {
   });
 
   if (dog === null) {
-    res.status(204).send({ status: 204 });
+    return res.status(204).send({ status: 204 });
   } else {
     await prisma.dog.delete({
       where: { id },
     });
-    res.json(dog).status(200);
+    return res.json(dog).status(200);
   }
 });
 
@@ -97,7 +97,6 @@ const checkDescriptionForErrors = (
 // create Endpoint
 app.post("/dogs", async (req, res) => {
   const { name, breed, age, description } = req.body;
-  console.log(req.body, "req.body");
   const ageError = checkAgeForErrors(age);
   const nameError = checkNameForErrors(name);
   const breedError = checkBreedForErrors(breed);
@@ -118,7 +117,7 @@ app.post("/dogs", async (req, res) => {
   }
 
   if (invalidProperties.length > 0) {
-    res.status(400).send({
+    return res.status(400).send({
       errors: invalidProperties.map(
         (prop) => `'${prop}' is not a valid key`
       ),
@@ -140,7 +139,7 @@ app.post("/dogs", async (req, res) => {
     errors.push(descriptionError);
   }
   if (errors.length > 0) {
-    res.status(400).send({ errors: errors });
+    return res.status(400).send({ errors: errors });
   }
 
   const createDog = await Promise.resolve()
@@ -178,7 +177,7 @@ app.patch("/dogs/:id", async (req, res) => {
   }
 
   if (invalidProperties.length > 0) {
-    res.status(400).send({
+    return res.status(400).send({
       errors: invalidProperties.map(
         (prop) => `'${prop}' is not a valid key`
       ),
